@@ -1,59 +1,47 @@
-Got it 🚀
-Here’s a clean **README.md** file you can include alongside your model code when uploading to GitHub.
+# Alzheimer Mixture of Experts (MoE) with Channel & Spatial Attention
+
+This repository provides a PyTorch implementation of an **Alzheimer’s Disease classification model** based on a **Mixture of Experts (MoE)** architecture with **Channel and Spatial Attention**.
+The model integrates DenseNet-inspired feature extraction, a gating mechanism for expert selection, and attention modules to improve interpretability and performance on medical imaging tasks.
 
 ---
 
-```markdown
-# Alzheimer Mixture of Experts (MoE) Model
+## 🚀 Features
 
-This repository contains a **PyTorch implementation** of a **Mixture of Experts (MoE) model** with **Dense Blocks**, **Channel Attention**, and **Spatial Attention** for Alzheimer’s disease classification.
+* **Dense Blocks** – Efficient feature reuse with dense connections.
+* **Channel Attention (CA)** – Enhances informative feature channels.
+* **Spatial Attention (SA)** – Focuses on key spatial regions in MRI/CT scans.
+* **Mixture of Experts (MoE)** – Multiple experts with adaptive gating network.
+* **Auxiliary Classifier** – Helps stabilize training with intermediate supervision.
+* **Multi-output** – Provides main and auxiliary predictions along with attention maps.
 
-The model is designed with:
-- **DenseNet-style Dense Blocks** for efficient feature reuse.  
-- **Channel Attention** and **Spatial Attention** mechanisms for adaptive feature refinement.  
-- **Mixture of Experts (MoE)** with a **Gating Network** for dynamic expert selection.  
-- **Auxiliary Classifier** for intermediate supervision.  
+## 🧠 Model Overview
 
-## 🚀 Usage
+The model consists of:
 
-### Run the model
+1. **Initial Convolution Layer** – Standard stem for feature extraction.
+2. **MoE Stages (3x)** – Each stage has:
+
+   * Multiple **Experts** (DenseBlocks + Attention).
+   * **Gating Network** to assign weights to experts.
+   * **Transition Layer** for downsampling.
+3. **Auxiliary Classifier** – Early classification branch.
+4. **Main Classifier** – Final prediction head.
+
+---
+
+## ▶️ Usage
+
+Run the model script to print the architecture and test a forward pass:
 
 ```bash
-python alzheimer_moe.py
+python alzheimer-moe.py
 ```
 
-### What it does
-
-* Builds the **AlzheimerMoEModel**
-* Prints the full **architecture summary** (using `torchsummary`)
-* Runs a **dummy forward pass** with input shape `(1, 3, 224, 224)`
-* Prints the shape of the **main classifier output** and **auxiliary classifier output**
-
----
-
-## 🏗 Model Architecture
-
-The model has three **Mixture of Experts stages**, each containing multiple experts:
-
-* Experts alternate between **Channel Attention** and **Spatial Attention**.
-* A **Gating Network** dynamically routes features to experts.
-* Outputs are combined and passed through a **Transition Layer**.
-
-After three stages:
-
-* An **auxiliary classifier** produces an early prediction.
-* A **global average pooling + fully connected head** produces the final classification.
-
----
-
-## 📊 Example Output
-
-After running:
+Example output:
 
 ```
 ===== Model Architecture =====
-
-... (torchsummary output here) ...
+... (torchsummary output)
 
 ===== Forward Pass Test =====
 Main output shape: torch.Size([1, 3])
@@ -62,16 +50,25 @@ Auxiliary output shape: torch.Size([1, 3])
 
 ---
 
-## 🧠 Applications
+## 📊 Outputs
 
-This architecture can be applied to:
+The model returns:
 
-* Alzheimer’s disease classification from MRI or PET scans
-* General medical image analysis tasks requiring attention + MoE
-* Any multi-class classification problem with complex features
+* **Main Output** → Final classification logits.
+* **Auxiliary Output** → Intermediate classification logits.
+* **Gating Weights** (optional) → Expert assignment probabilities.
+* **Attention Maps** (optional) → Channel/Spatial attention visualization.
+
+Example forward pass:
+
+```python
+from model import AlzheimerMoEModel
+import torch
+
+model = AlzheimerMoEModel(input_channels=3, num_classes=3)
+dummy_input = torch.randn(1, 3, 224, 224)
+
+main_out, aux_out, gates, attn = model(dummy_input, return_attention=True)
+```
 
 ---
-
-
-👉 Do you want me to also generate a **`LICENSE` file** (MIT) so it’s ready for GitHub upload?
-```
